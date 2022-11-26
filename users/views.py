@@ -10,7 +10,7 @@ from django.contrib.auth.decorators import login_required
 
 from django.contrib import messages
 #user creation form impot
-from .forms import CustomUserCreationForm
+from .forms import CustomUserCreationForm, ProfileForm
 
 # Create your views here.
 
@@ -21,8 +21,8 @@ def profiles(request):
 
 def developer(request, pk):
     profile = Profile.objects.get(id=pk)
-    topSkill = profile.skills_set.exclude(description="")
-    otherSkill = profile.skills_set.filter(description="")
+    topSkill = profile.skill_set.exclude(description="")
+    otherSkill = profile.skill_set.filter(description="")
     context = {'profile': profile, 'topSkill': topSkill, 'otherSkill': otherSkill}
     return render(request, 'users/user-profile.html', context)
 
@@ -40,7 +40,7 @@ def registerUser(request):
                 user.save()
                 messages.success(request, 'Acconnt successfully registered')
                 login(request, user)
-                return redirect('profiles')
+                return redirect('edit-account')
         else:
             messages.error(request, "An error occured. Please try again.")
 
@@ -90,3 +90,30 @@ def loginUser(request):
 
 
     return render(request, 'users/login-register.html', context=context)
+
+@login_required(login_url='login')
+def userAccount(request):
+    profile = request.user.profile
+    skills = profile.skill_set.all()
+    projects = profile.project_set.all()
+ 
+    context = {'profile' : profile, 'skills' : skills, 'projects' : projects}
+    return render(request, 'users/account.html', context=context)
+
+@login_required(login_url='login')
+def editAccount(request):
+    
+    profile = request.user.profile
+    form = ProfileForm(instance=profile)
+    context = {'form' : form}
+    
+    if request.method == 'POST':
+        print('IS VALID')
+        form = ProfileForm(request.POST, request.FILES, instance=profile)
+        if form.is_valid():
+            form.save()
+
+            return redirect('account')
+
+    context = {'form' : form}
+    return render(request, 'users/profile_form.html', context)    

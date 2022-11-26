@@ -32,7 +32,7 @@ class Profile(models.Model):
 
 
 
-class Skills(models.Model):
+class Skill(models.Model):
 
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
     created_date = models.DateTimeField(auto_now=True)
