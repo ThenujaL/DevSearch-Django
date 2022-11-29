@@ -3,20 +3,21 @@ from multiprocessing import context
 import profile
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Profile
+from .models import Profile, Skill
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-
+from django.db.models import Q
 from django.contrib import messages
 #user creation form impot
 from .forms import CustomUserCreationForm, ProfileForm, SkillForm
+from .utils import searchProfiles
 
 # Create your views here.
 
 def profiles(request):
-    profiles = Profile.objects.all()
-    context = {'profiles': profiles}
+    profiles, search_query = searchProfiles(request)
+    context = {'profiles': profiles, 'search_query' : search_query}
     return render(request, 'users/developers.html', context)
 
 def developer(request, pk):
@@ -150,6 +151,7 @@ def updateSkill(request, pk):
     context = {'form' : form}
     return render(request, 'users/skill_form.html', context)
 
+@login_required(login_url='login')
 def deleteSkill(request, pk):
     profile = request.user.profile
     skill = profile.skill_set.get(id=pk)
@@ -161,3 +163,4 @@ def deleteSkill(request, pk):
 
     context = {'object' : skill}
     return render(request, 'delete_template.html', context)
+

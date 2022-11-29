@@ -4,16 +4,17 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-
-from .models import Project
+from .utils import searchProjects
+from .models import Project, Tag
 from django.http import HttpResponse
 from .forms import ProjectForm
+from django.db.models import Q
 
 # Create your views here.
 
 def projects(request):
-    projects = Project.objects.all()
-    context = {'projects': projects}
+    projects, search_query = searchProjects(request)
+    context = {'projects': projects, 'search_query' : search_query}
     return render(request, 'projects/projects.html', context)
 
 def project(request, pk):  
