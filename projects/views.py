@@ -4,18 +4,27 @@ from multiprocessing import context
 from django.shortcuts import redirect, render
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .utils import searchProjects
+from .utils import searchProjects, paginateProjects
 from .models import Project, Tag
 from django.http import HttpResponse
 from .forms import ProjectForm
 from django.db.models import Q
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 # Create your views here.
 
 def projects(request):
     projects, search_query = searchProjects(request)
-    context = {'projects': projects, 'search_query' : search_query}
+    itemsPerPage = 4
+    projects, page_range, paginator = paginateProjects(request, projects, itemsPerPage)
+
+    context = {'projects': projects,
+                'search_query' : search_query,
+                'paginator' : paginator,
+                'page_range' : page_range}
     return render(request, 'projects/projects.html', context)
+
+    
 
 def project(request, pk):  
     projectObj = Project.objects.get(id=pk)

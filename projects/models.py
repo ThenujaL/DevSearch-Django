@@ -15,13 +15,16 @@ class Project(models.Model):
     featured_image = models.ImageField(null=True, blank=True, default='default.jpg')
     vote_total = models.IntegerField(default=0, blank=True, null=True)
     vote_ratio = models.IntegerField(default=0, blank=True, null=True)
-    demo_link = models.CharField(max_length=2000)
-    source_link = models.CharField(max_length=2000)
+    demo_link = models.CharField(null=True, blank=True, max_length=2000)
+    source_link = models.CharField(null=True, blank=True, max_length=2000)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
 
     def __str__(self):
         return self.title
+
+    class Meta:
+        ordering = ['created']
 
 class Review(models.Model):
     VOTE_TYPE = (

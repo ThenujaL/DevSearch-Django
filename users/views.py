@@ -11,13 +11,18 @@ from django.db.models import Q
 from django.contrib import messages
 #user creation form impot
 from .forms import CustomUserCreationForm, ProfileForm, SkillForm
-from .utils import searchProfiles
+from .utils import searchProfiles, paginateProfiles
 
 # Create your views here.
 
 def profiles(request):
     profiles, search_query = searchProfiles(request)
-    context = {'profiles': profiles, 'search_query' : search_query}
+    itemsPerPage = 5
+    profiles, page_range, paginator = paginateProfiles(request, profiles, itemsPerPage)
+    context = {'profiles': profiles, 
+               'search_query' : search_query,
+               'page_range' : page_range}
+               
     return render(request, 'users/developers.html', context)
 
 def developer(request, pk):
