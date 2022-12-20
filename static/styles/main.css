@@ -1,3 +1,7 @@
 h1 {
     color: red;
 }
+
+.comments .form label {
+    position: relative !important;
+  }

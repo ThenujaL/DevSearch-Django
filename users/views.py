@@ -69,7 +69,7 @@ def loginUser(request):
     
     if request.method == 'POST':
 
-        username = request.POST['username']
+        username = request.POST['username'].lower()
         password = request.POST['password']
 
 
@@ -89,7 +89,7 @@ def loginUser(request):
             if user is not None:
                 print('User exists')
                 login(request, user)
-                return redirect('profiles')
+                return redirect(request.GET['next'] if 'next' in request.GET else 'account')
             else:
                 print('Username and password does not match')
                 messages.error(request, 'Username and password does not match')

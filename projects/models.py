@@ -22,21 +22,47 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
-
+    
     class Meta:
-        ordering = ['created']
+            ordering = ['-vote_ratio', '-vote_total', 'created']
+
+    @property
+    def reviewers(self):
+        queryset = self.review_set.all().values_list('owner__id', flat=True)
+        return queryset
+
+    #property decorator lets this method be called a property as opposed to a method
+    @property
+    def get_voteCount(self):
+        upVotes = self.review_set.filter(value='UP').count()
+        totalVotes = self.review_set.count()
+
+        if totalVotes > 0:
+            ratio = int((upVotes / totalVotes) * 100)
+        else:
+            ratio = 0
+
+        self.vote_total = totalVotes
+        self.vote_ratio = ratio
+        self.save()
+
+    
 
 class Review(models.Model):
     VOTE_TYPE = (
         ('UP', 'Up Vote'),
         ('DOWN', 'Down Vote')
     )
-
+    owner = models.ForeignKey(Profile, on_delete=models.CASCADE, null=True) #null = True for debugging
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     body = models.TextField(null=True, blank=True)
     value = models.CharField(choices=VOTE_TYPE, max_length=200)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4,unique=True, primary_key=True, editable=False)
+    
+    # class Meta:
+    #     # enforces that only one comment can be lest per user per project
+    #     unique_together = [['owner', 'project']]
 
     def __str__(self):
         return self.value
