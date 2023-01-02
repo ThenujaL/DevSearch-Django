@@ -15,7 +15,7 @@ from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 def projects(request):
     projects, search_query = searchProjects(request)
-    itemsPerPage = 4
+    itemsPerPage = 5
     projects, page_range, paginator = paginateProjects(request, projects, itemsPerPage)
 
     context = {'projects': projects,
