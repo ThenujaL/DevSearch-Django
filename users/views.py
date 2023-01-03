@@ -43,10 +43,15 @@ def registerUser(request):
         if form.is_valid():
                 user = form.save(commit=False)
                 user.username = user.username.lower()
-                user.save()
-                messages.success(request, 'Acconnt successfully registered')
-                login(request, user)
-                return redirect('edit-account')
+                # check is user already exists
+                try:
+                    User.objects.get(username=user.username)
+                    messages.error(request, 'Username already exists!')
+                except User.DoesNotExist:
+                    user.save()
+                    messages.success(request, 'Acconnt successfully registered')
+                    login(request, user)
+                    return redirect('edit-account')
         else:
             messages.error(request, "An error occured. Please try again.")
 
