@@ -60,9 +60,9 @@ class Review(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4,unique=True, primary_key=True, editable=False)
     
-    # class Meta:
-    #     # enforces that only one comment can be lest per user per project
-    #     unique_together = [['owner', 'project']]
+    class Meta:
+        # enforces that only one comment can be lest per user per project
+        unique_together = [['owner', 'project']]
 
     def __str__(self):
         return self.value
