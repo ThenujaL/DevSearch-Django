@@ -11,10 +11,15 @@ from django.core.mail import send_mail
 
 #delete user when profile is deleted
 def deleteUser(sender, instance, **kwargs):
-    user = instance.user
-    user.delete()
-    print('User deleted!')
+    # try block needed as Profile is deleted due to CASCADE on_delete
+    # if not this will keep calling itself
+    try: 
+        user = instance.user
+        user.delete()
+        print('User deleted!')
 
+    except:
+        print('Profile deleted from models.CASCADE')
 
 
 #save or create profile

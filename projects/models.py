@@ -7,7 +7,7 @@ from users.models import Profile
 
 # Create your models here.
 class Project(models.Model):
-    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.SET_NULL)
+    owner = models.ForeignKey(Profile, null=True, blank=True, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     description = models.TextField(null=True, blank=True)
     tags = models.ManyToManyField('Tag', blank=True)
@@ -19,6 +19,16 @@ class Project(models.Model):
     source_link = models.CharField(null=True, blank=True, max_length=2000)
     created = models.DateTimeField(auto_now_add=True)
     id = models.UUIDField(default=uuid.uuid4, unique=True, primary_key=True, editable=False)
+
+
+    # if user deletes the default image
+    @property
+    def image_url(self):
+        try:
+            url = self.featured_image.url
+        except:
+            url = '/static/images/default.jpg'
+        return url
 
     def __str__(self):
         return self.title

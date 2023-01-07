@@ -3,6 +3,7 @@ from multiprocessing import context
 import profile
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from django.db import IntegrityError
 from .models import Profile, Skill, Message
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.models import User
@@ -51,7 +52,7 @@ def registerUser(request):
                     user.save()
                     messages.success(request, 'Acconnt successfully registered')
                     login(request, user)
-                    return redirect('edit-account')
+                    return redirect('edit-account')   
         else:
             messages.error(request, "An error occured. Please try again.")
 

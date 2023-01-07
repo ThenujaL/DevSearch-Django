@@ -34,7 +34,7 @@
             <div class="dev">
               <a href="{% url 'profile' developer.id %}" class="card__body">
                 <div class="dev__profile">
-                  <img class="avatar avatar--md" src="{{ developer.profile_image.url }}" alt="image" />
+                  <img class="avatar avatar--md" src="{{ developer.image_url }}" alt="image" />
                   <div class="dev__meta">
                     <h3>{{developer.first_name}} {{developer.last_name}}</h3>
                     <h5>{{developer.short_intro}}</h5>
