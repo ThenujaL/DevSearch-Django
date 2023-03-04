@@ -1,3 +1,4 @@
 /env/
 .env
 devsearch\__pycache__
+/Dockerfile
